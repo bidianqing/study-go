@@ -10,6 +10,7 @@ import (
 // 使用go关键字开启一个协程
 // 主死从随
 // 使用WaitGroup控制协程退出
+// go语言在执行goroutine的时候是没有返回值的，这时候我们要用到go语言中特色的channel来获取返回值
 
 func main() {
 	var wg sync.WaitGroup
