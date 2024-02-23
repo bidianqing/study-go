@@ -1,3 +1,3 @@
 module github.com/bidianqing/study-go
 
-go 1.21.6
+go 1.22.0
