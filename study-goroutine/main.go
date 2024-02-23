@@ -11,9 +11,9 @@ import (
 // 主死从随
 // 使用WaitGroup控制协程退出
 
-var wg sync.WaitGroup
-
 func main() {
+	var wg sync.WaitGroup
+
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func(num int) {
@@ -23,28 +23,24 @@ func main() {
 	}
 
 	wg.Add(1)
-	go PrintJava()
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 10; i++ {
+			fmt.Println("Hello Java" + strconv.Itoa(i))
+			time.Sleep(1 * time.Second)
+		}
+	}()
 
 	wg.Add(1)
-	go PrintGolang()
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 5; i++ {
+			fmt.Println("Hello Golang" + strconv.Itoa(i))
+			time.Sleep(1 * time.Second)
+		}
+	}()
 
 	wg.Wait()
 
 	fmt.Println("执行完成")
-}
-
-func PrintJava() {
-	defer wg.Done()
-	for i := 0; i < 10; i++ {
-		fmt.Println("Hello Java" + strconv.Itoa(i))
-		time.Sleep(1 * time.Second)
-	}
-}
-
-func PrintGolang() {
-	defer wg.Done()
-	for i := 0; i < 5; i++ {
-		fmt.Println("Hello Golang" + strconv.Itoa(i))
-		time.Sleep(1 * time.Second)
-	}
 }
