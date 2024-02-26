@@ -18,13 +18,13 @@ import (
 // 3、缓冲区满时进行写数据
 
 func main() {
-	TestChan()
+	//TestChan()
 
 	//TestCloseChan()
 
 	// TestEachChan()
 
-	//TestGoRoutineAndChan()
+	TestGoRoutineAndChan()
 
 	//TestSelectChan()
 }
@@ -68,10 +68,14 @@ func TestGoRoutineAndChan() {
 
 	wg.Add(1)
 	go func() {
-		defer wg.Done()
-
-		for v := range c {
-			fmt.Println("读取数据成功", v)
+		for {
+			v, ok := <-c
+			fmt.Println("读取数据成功", v, ok)
+			if !ok {
+				fmt.Println("ok=", ok)
+				wg.Done()
+				break
+			}
 		}
 	}()
 
@@ -95,12 +99,20 @@ func TestEachChan() {
 }
 
 func TestCloseChan() {
-	c := make(chan int, 3)
-
+	c := make(chan int, 2)
 	c <- 10
+	c <- 11
+
+	num, ok := <-c
+	fmt.Println(num, ok)
+
 	close(c)
-	c <- 11 // 管道关闭以后就不能写入数据了，此行报错
-	<-c
+
+	num2, ok2 := <-c
+	fmt.Println(num2, ok2)
+
+	num3, ok3 := <-c
+	fmt.Println(num3, ok3)
 }
 
 func TestChan() {
