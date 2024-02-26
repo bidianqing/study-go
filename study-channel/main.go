@@ -51,7 +51,7 @@ func TestSelectChan() {
 }
 
 func TestGoRoutineAndChan() {
-	c := make(chan int)
+	c := make(chan int, 5)
 	var wg sync.WaitGroup
 
 	wg.Add(1)
@@ -61,7 +61,8 @@ func TestGoRoutineAndChan() {
 		for i := 0; i < 10; i++ {
 			c <- i
 			fmt.Println("写入数据成功", i)
-			time.Sleep(time.Second)
+			fmt.Println("管道长度为", len(c), "，容量为", cap(c))
+			time.Sleep(time.Second * 5)
 		}
 		close(c)
 	}()
@@ -71,6 +72,7 @@ func TestGoRoutineAndChan() {
 		for {
 			v, ok := <-c
 			fmt.Println("读取数据成功", v, ok)
+			// time.Sleep(time.Second)
 			if !ok {
 				fmt.Println("ok=", ok)
 				wg.Done()
