@@ -18,7 +18,7 @@ import (
 // 3、缓冲区满时进行写数据
 
 func main() {
-	//TestChan()
+	TestChan()
 
 	//TestCloseChan()
 
@@ -121,6 +121,4 @@ func TestChan() {
 	fmt.Println("管道长度为", len(c), "，容量为", cap(c))
 
 	//<-c
-
-	fmt.Println(c)
 }
