@@ -22,7 +22,7 @@ func main() {
 
 	//TestCloseChan()
 
-	// TestEachChan()
+	//TestEachChan()
 
 	TestGoRoutineAndChan()
 
@@ -62,22 +62,32 @@ func TestGoRoutineAndChan() {
 			c <- i
 			fmt.Println("写入数据成功", i)
 			fmt.Println("管道长度为", len(c), "，容量为", cap(c))
-			time.Sleep(time.Second * 5)
+			time.Sleep(time.Second)
 		}
 		close(c)
 	}()
 
 	wg.Add(1)
 	go func() {
-		for {
-			v, ok := <-c
-			fmt.Println("读取数据成功", v, ok)
-			// time.Sleep(time.Second)
-			if !ok {
-				fmt.Println("ok=", ok)
-				wg.Done()
-				break
-			}
+
+		// for {
+		// 	v, ok := <-c
+		// 	fmt.Println("读取数据成功", v, ok)
+		// 	if !ok {
+		// 		fmt.Println("ok=", ok)
+		// 		wg.Done()
+		// 		break
+		// 	}
+		// }
+
+		defer func() {
+			fmt.Println("执行defer")
+			wg.Done()
+		}()
+		// 在使用协程的情况下，如果管道关闭，在消费完管道里的数据以后，自动结束循环
+		for v := range c {
+			fmt.Println("读取数据成功", v)
+			time.Sleep(time.Second * 5)
 		}
 	}()
 
