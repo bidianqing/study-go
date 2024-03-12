@@ -1,0 +1,18 @@
+serverAddr = "8.210.193.88"
+serverPort = 7000
+
+[[proxies]]
+name = "web"
+type = "https"
+localIP = "127.0.0.1"
+localPort = 8080
+subdomain = "gin"
+
+[proxies.plugin]
+type = "https2http"
+localAddr = "127.0.0.1:8080"
+
+crtPath = "./fullchain.cer"
+keyPath = "./oneasp.net.key"
+hostHeaderRewrite = "127.0.0.1"
+requestHeaders.set.x-from-where = "frp"
