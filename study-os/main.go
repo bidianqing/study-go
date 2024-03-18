@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"os/exec"
 
 	"gopkg.in/ini.v1"
 )
@@ -29,7 +31,7 @@ func main() {
 		fmt.Println(v)
 	}
 
-	data, err := os.ReadFile("study-os/frpc.toml")
+	data, err := os.ReadFile("study-os/frpc.ini")
 	if err != nil {
 		panic(err)
 	}
@@ -42,4 +44,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	Command("dotnet", "--info")
+}
+
+func Command(name string, args ...string) {
+	cmd := exec.Command(name, args...)
+	stdout, _ := cmd.StdoutPipe()
+	cmd.Start()
+
+	resp, _ := io.ReadAll(stdout)
+	fmt.Println(string(resp))
 }

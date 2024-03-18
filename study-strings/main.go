@@ -7,8 +7,9 @@ import (
 
 func main() {
 	// 去除字符长前面和后面的空格
-	// name := "    tom        "
-	// fmt.Println(strings.Trim(name, " "))
+	name := "    tom        "
+	fmt.Println(strings.Trim(name, " "))
+	fmt.Println(strings.TrimSpace(name))
 
 	// 判断是否以指定字符串开头并去除
 	token := "Bearer 123456"
