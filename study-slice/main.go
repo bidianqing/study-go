@@ -3,6 +3,12 @@ package main
 /*
 https://github.com/golang/go/blob/master/src/runtime/slice.go#L15
 
+type slice struct {
+	array unsafe.Pointer
+	len   int
+	cap   int
+}
+
 无论是 var 声明定义的 slice 变量，还是 make(xxx，num) 创建的 slice 变量，slice 管理结构是已经分配出来了的（也就是 struct slice 结构 ）。
 所以， 对于 slice 来说，其实并不需要 make 创建的才能使用，直接用 var 定义出来的 slice 也能直接使用
 
