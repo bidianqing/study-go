@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"slices"
+)
+
 /*
 https://github.com/golang/go/blob/master/src/runtime/slice.go#L15
 
@@ -18,6 +23,12 @@ make时，如果传一个数字n1，那么切片的长度和容量都是n1，如
 */
 
 func main() {
+	s1 := []User{{Id: 1}, {Id: 2}}
+	index := slices.IndexFunc(s1, func(u User) bool {
+		return u.Id == 2
+	})
+	fmt.Println(s1[index])
+
 	// s1 := []int{1, 2, 3, 4, 5}
 	// s2 := s1[1:]
 
