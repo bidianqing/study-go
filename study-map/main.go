@@ -21,8 +21,11 @@ func main() {
 	user["name"] = "tom"
 	user["address"] = "北京"
 
+	val, ok := user["age"]
+	fmt.Println(val, ok)
+
 	// user := make(map[string]string, 10) // 10为容量
 	// user["name"] = "tom"
 
-	fmt.Println(user)
+	// fmt.Println(user)
 }
