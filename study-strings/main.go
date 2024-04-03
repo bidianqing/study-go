@@ -15,4 +15,9 @@ func main() {
 	token := "Bearer 123456"
 	fmt.Println(strings.HasPrefix(token, "Bearer "))
 	fmt.Println(strings.TrimPrefix(token, "Bearer "))
+
+	var sb strings.Builder
+	sb.WriteString("hello ")
+	sb.WriteString("world")
+	fmt.Println(sb.String())
 }
