@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
 // 不能使用cap获取map的容量
@@ -28,4 +29,21 @@ func main() {
 	// user["name"] = "tom"
 
 	// fmt.Println(user)
+
+	ConcurrentMap()
+}
+
+func ConcurrentMap() {
+	m := make(map[string]string)
+	var wait sync.WaitGroup
+	wait.Add(1000)
+
+	for i := 0; i < 1000; i++ {
+		item := fmt.Sprintf("%d", i)
+		go func() {
+			wait.Done()
+			m[item] = item
+		}()
+	}
+	wait.Wait()
 }

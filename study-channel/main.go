@@ -8,6 +8,8 @@ import (
 
 // channel本质是队列，先进先出，线程安全
 // 引用类型
+// 管道关闭以后不能重复关闭，否认会panic: close of closed channel
+// 管道关闭以后就不能往里面写数据，否则会panic: send on closed channel
 // 在没有使用协程的情况下，写入数据和消费数据会改变管道的长度，管道的长度不能超过容量
 // 在没有使用协程的情况下，如果管道的长度是0，就不能从管道里取数据，否认报错
 // 使用内置函数close可以关闭管道，当管道关闭后，就不能再向管道写数据了，但是仍然可以从该管道读取数据。
@@ -24,30 +26,62 @@ func main() {
 
 	//TestEachChan()
 
-	TestGoRoutineAndChan()
+	//TestGoRoutineAndChan()
 
-	//TestSelectChan()
+	TestSelectChan()
 }
 
 func TestSelectChan() {
 	c1 := make(chan int)
+	var wg sync.WaitGroup
+
+	wg.Add(1)
 	go func() {
-		time.Sleep(time.Second * 5)
-		c1 <- 10
+		defer wg.Done()
+
+		for i := 0; i < 10; i++ {
+			c1 <- i
+			time.Sleep(time.Second * 5)
+		}
+		close(c1)
 	}()
 
 	c2 := make(chan string)
+	wg.Add(1)
 	go func() {
-		time.Sleep(time.Second * 2)
-		c2 <- "hello golang"
+		defer wg.Done()
+
+		for i := 0; i < 10; i++ {
+			c2 <- "hello golang"
+			time.Sleep(time.Second * 2)
+		}
+		close(c2)
 	}()
 
-	select {
-	case v := <-c1:
-		fmt.Println("从c1获取到:", v)
-	case v := <-c2:
-		fmt.Println("从c2获取到:", v)
-	}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		for {
+			select {
+			case v, ok := <-c1:
+				if ok {
+					fmt.Println("从c1获取到:", v)
+				} else {
+					c1 = nil
+				}
+			case v, ok := <-c2:
+				if ok {
+					fmt.Println("从c2获取到:", v)
+				} else {
+					c1 = nil
+				}
+			}
+		}
+	}()
+
+	wg.Wait()
+	fmt.Println("执行成功")
 }
 
 func TestGoRoutineAndChan() {
@@ -114,11 +148,12 @@ func TestCloseChan() {
 	c := make(chan int, 2)
 	c <- 10
 	c <- 11
+	close(c)
+	//close(c) // 管道关闭以后不能重复关闭，否认会panic: close of closed channel
+	// c <- 12 // 管道关闭以后就不能往里面写数据，否则会panic: send on closed channel
 
 	num, ok := <-c
 	fmt.Println(num, ok)
-
-	close(c)
 
 	num2, ok2 := <-c
 	fmt.Println(num2, ok2)
@@ -132,6 +167,7 @@ func TestChan() {
 	fmt.Println("管道长度为", len(c), "，容量为", cap(c))
 
 	c <- 10
+	fmt.Println("管道长度为", len(c), "，容量为", cap(c))
 	c <- 11
 	c <- 12
 
