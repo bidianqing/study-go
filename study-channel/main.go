@@ -31,6 +31,8 @@ func main() {
 	TestSelectChan()
 }
 
+// select 是 Go 语言中的一种控制结构，用于在多个通信操作中选择一个可执行的操作。它可以协调多个 channel 的读写操作，使得我们能够在多个 channel 中进行非阻塞的数据传输、同步和控制。
+// Go 语言中的 select 语句是一种用于多路复用通道的机制，它允许在多个通道上等待并处理消息。相比于简单地使用 for 循环遍历通道，使用 select 语句能够更加高效地管理多个通道。
 func TestSelectChan() {
 	c1 := make(chan int)
 	var wg sync.WaitGroup
